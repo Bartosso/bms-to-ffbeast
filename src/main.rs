@@ -74,7 +74,7 @@ fn compute_is_on_ground(intellivible_data: &IntellivibeData) -> String {
 
 fn compute_actual_flight_data(flight_data: &FlightData, intellivible_data: &IntellivibeData) -> String {
     let indicated_airspeed_kmh: f32 = flight_data.kias * 1.852;
-    let vertical_speed_kmh: f32 = flight_data.z_dot * 0.3048;
+    let vertical_speed_kmh: f32 = -flight_data.z_dot * 0.3048;
     let aoa: f32 = flight_data.alpha;
     let g_force: f32 = intellivible_data.g_force;
     let gear: f32 = flight_data.gear_pos;
