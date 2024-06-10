@@ -14,9 +14,11 @@ fn main() {
 
     connect_to_the_telemetry_socket(&socket, socket_host, socket_port).expect("Can't connect to the telemetry's socket!");
 
+    println!("Waiting for BMS");
     let flight_data = wait_for_flight_data();
     let intellivibe_data  = wait_for_intellivibe_data();
 
+    println!("Starting main loop");
     main_loop( &socket, flight_data, intellivibe_data);
     println!("Shutting down since BMS is closed");
 }
@@ -62,11 +64,11 @@ fn connect_to_the_telemetry_socket(socket: &UdpSocket, socket_host: &str, socket
     socket.connect(socket_address)
 }
 
-fn compute_is_on_ground(intellivible_data: &IntellivibeData) -> f32 {
+fn compute_is_on_ground(intellivible_data: &IntellivibeData) -> String {
     if intellivible_data.on_ground {
-        1.0
+        String::from("1")
     } else {
-        0.0
+        String::from("0")
     }
 }
 
@@ -76,18 +78,18 @@ fn compute_actual_flight_data(flight_data: &FlightData, intellivible_data: &Inte
     let aoa: f32 = flight_data.alpha;
     let g_force: f32 = intellivible_data.g_force;
     let gear: f32 = flight_data.gear_pos;
-    let airbreak: f32 = flight_data.speed_brake * 100.0;
+    let airbreak: f32 = flight_data.speed_brake;
     let flaps: f32 = 0.0; // idk where to get it
     let thrust: f32 = flight_data.rpm;
-    let on_ground: f32 = compute_is_on_ground(intellivible_data);
+    let on_ground: String = compute_is_on_ground(intellivible_data);
     let result = format!(
-        "bms;{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{:.2}\n",
+        "bms;{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{}\n",
         indicated_airspeed_kmh, vertical_speed_kmh, aoa, g_force, gear, airbreak, flaps, thrust, on_ground);
     result
 }
 
 fn compute_zero_data() -> String {
-    let result = format!("bms;{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{:.2}\n", 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    let result = format!("bms;{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{}\n", 0, 0, 0, 0, 0, 0, 0, 0, String::from("0"));
     result
 }
 
