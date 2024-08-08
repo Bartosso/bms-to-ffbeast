@@ -76,12 +76,12 @@ fn compute_actual_flight_data(flight_data: &FlightData, intellivible_data: &Inte
     let indicated_airspeed_kmh: f32 = flight_data.kias * 1.852;
     let vertical_speed_kmh: f32 = -flight_data.z_dot * 0.3048;
     let aoa: f32 = flight_data.alpha;
-    let g_force: f32 = intellivible_data.g_force;
+    let g_force: f32 = flight_data.gs;
     let gear: f32 = flight_data.gear_pos;
     let airbreak: f32 = flight_data.speed_brake;
     let flaps: f32 = 0.0; // idk where to get it
     let thrust: f32 = flight_data.rpm;
-    let on_ground: String = compute_is_on_ground(intellivible_data);
+    let on_ground: String = compute_is_on_ground(intellivible_data); // should compute from flight data, intellivible_data takes data from the shown plane I think
     let result = format!(
         "bms;{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{:.2};{}\n",
         indicated_airspeed_kmh, vertical_speed_kmh, aoa, g_force, gear, airbreak, flaps, thrust, on_ground);
